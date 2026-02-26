@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 async function createAdminUser() {
   // --- CHOOSE YOUR ADMIN PASSWORD ---
   // Replace this with the password you want to use to log in.
-  const password = 'nacos_admin_password_123!';
+  const password = 'nacos001';
   // ----------------------------------
 
   console.log('Generating hash for the admin user...');
