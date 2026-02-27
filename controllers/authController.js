@@ -44,7 +44,7 @@ const login = async (req, res) => {
 
     res.status(200).json({ 
       success: true, 
-      token: `Bearer ${token}`,
+      token: `token`,
       role: admin.role 
     });
   } catch (error) {
@@ -55,3 +55,4 @@ const login = async (req, res) => {
 
 
 module.exports = { login };
+
