@@ -17,7 +17,13 @@ const getDepartmentFromRole = (role) => {
 const createTimetableEntry = async (req, res) => {
   try {
     const { day, time, courseTitle, venue } = req.body;
-    const department = getDepartmentFromRole(req.user.role);
+    let department;
+
+    if (req.user.role === 'President') {
+      department = req.body.department;
+    } else {
+      department = getDepartmentFromRole(req.user.role);
+    }
 
     if (!department) {
       return res.status(403).json({ message: 'User role cannot create timetables.' });
@@ -61,9 +67,11 @@ const updateTimetableEntry = async (req, res) => {
       return res.status(404).json({ message: 'Timetable entry not found' });
     }
 
-    const userDepartment = getDepartmentFromRole(req.user.role);
-    if (entry.department !== userDepartment) {
-      return res.status(403).json({ message: 'User not authorized to update this timetable' });
+    if (req.user.role !== 'President') {
+      const userDepartment = getDepartmentFromRole(req.user.role);
+      if (entry.department !== userDepartment) {
+        return res.status(403).json({ message: 'User not authorized to update this timetable' });
+      }
     }
 
     const updatedEntry = await Timetable.findByIdAndUpdate(req.params.id, req.body, {
@@ -88,9 +96,11 @@ const deleteTimetableEntry = async (req, res) => {
       return res.status(404).json({ message: 'Timetable entry not found' });
     }
 
-    const userDepartment = getDepartmentFromRole(req.user.role);
-    if (entry.department !== userDepartment) {
-      return res.status(403).json({ message: 'User not authorized to delete this timetable' });
+    if (req.user.role !== 'President') {
+      const userDepartment = getDepartmentFromRole(req.user.role);
+      if (entry.department !== userDepartment) {
+        return res.status(403).json({ message: 'User not authorized to delete this timetable' });
+      }
     }
 
     await entry.deleteOne();

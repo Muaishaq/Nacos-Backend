@@ -14,14 +14,14 @@ const login = async (req, res) => {
 
   try {
     // Check for admin and include passwordHash for comparison
-   const admin = await Admin.findOne({ username });
+    const admin = await Admin.findOne({ username }).select('+passwordHash');
 
-    if (!admin || !admin.password) {
+    if (!admin || !admin.passwordHash) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     // Check if password matches
-    const isMatch = await bcrypt.compare(password, admin.password);
+    const isMatch = await bcrypt.compare(password, admin.passwordHash);
 
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
@@ -44,7 +44,7 @@ const login = async (req, res) => {
 
     res.status(200).json({ 
       success: true, 
-      token: token,
+      token: `Bearer ${token}`,
       role: admin.role 
     });
   } catch (error) {
@@ -53,7 +53,4 @@ const login = async (req, res) => {
   }
 };
 
-
 module.exports = { login };
-
-
