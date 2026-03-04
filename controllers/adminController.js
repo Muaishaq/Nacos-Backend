@@ -12,12 +12,16 @@ const uploadStudents = async (req, res) => {
 
   const results = [];
 
-  fs.createReadStream(req.file.path)
+ fs.createReadStream(req.file.path)
     .pipe(csv({
       mapHeaders: ({ header }) => {
-        const trimmed = header.trim().toLowerCase();
-        if (trimmed === 'matricno') return 'matricNo';
-        if (trimmed === 'fullname' || trimmed === 'name') return 'fullName';
+        // Strip out hidden Excel characters (BOM), remove spaces, and convert to lowercase
+        const trimmed = header.replace(/^\uFEFF/g, '').replace(/\s+/g, '').toLowerCase();
+        
+        // Catch multiple variations just in case
+        if (trimmed === 'matricno' || trimmed === 'matricnumber') return 'matricNo';
+        if (trimmed === 'fullname' || trimmed === 'name' || trimmed === 'studentname') return 'fullName';
+        
         return header.trim();
       }
     }))
@@ -95,5 +99,6 @@ const uploadStudents = async (req, res) => {
       }
     });
 };
+
 
 module.exports = { uploadStudents };
