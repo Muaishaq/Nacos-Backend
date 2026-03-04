@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { verifyStudent } = require('../controllers/publicController');
 
-// Remove the /:matricNo completely! Just leave it as '/verify'
+// MUST be a POST request to handle matric numbers with slashes safely
 router.post('/verify', verifyStudent);
 
 module.exports = router;
