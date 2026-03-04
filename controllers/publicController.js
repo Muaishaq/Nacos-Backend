@@ -5,7 +5,11 @@ const Student = require('../models/Student');
 // @access  Public
 const verifyStudent = async (req, res) => {
   try {
-    const student = await Student.findOne({ matricNo: req.params.matricNo });
+    const decodedMatric = decodeURIComponent(req.params.matricNo).trim();
+    // Escape special characters for regex
+    const escapedMatric = decodedMatric.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+    // Perform a case-insensitive search for the exact matric number
+    const student = await Student.findOne({ matricNo: new RegExp('^' + escapedMatric + '$', 'i') });
 
     if (!student) {
       return res.status(404).json({ message: 'Student not found with this matriculation number.' });

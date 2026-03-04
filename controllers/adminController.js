@@ -20,7 +20,7 @@ const uploadStudents = async (req, res) => {
         
         // Catch multiple variations just in case
         if (trimmed === 'matricno' || trimmed === 'matricnumber') return 'matricNo';
-        if (trimmed === 'fullname' || trimmed === 'name' || trimmed === 'studentname') return 'fullName';
+        if (trimmed === 'fullname' || trimmed === 'name' || trimmed === 'studentname') return 'name';
         
         return header.trim();
       }
@@ -56,10 +56,10 @@ const uploadStudents = async (req, res) => {
         let createdCount = 0;
 
         for (const row of results) {
-          const matricNo = row.matricNo ? row.matricNo.trim() : null;
-          const fullName = row.fullName ? row.fullName.trim() : null;
+          const matricNo = row.matricNo ? row.matricNo.trim().toUpperCase() : null;
+          const name = row.name ? row.name.trim() : null;
           
-          if (!matricNo || !fullName) continue;
+          if (!matricNo || !name) continue;
 
           const existingStudent = await Student.findOne({ matricNo });
 
@@ -73,7 +73,7 @@ const uploadStudents = async (req, res) => {
             
             await Student.create({
               matricNo,
-              name: fullName,
+              name: name,
               department: department,
               level: level,
               nacosId,
