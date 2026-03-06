@@ -15,11 +15,12 @@ const eventSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    category: {
-      type: String,
-      required: true,
-      enum: ['Sports', 'Tech Guild', 'General'],
-    },
+  category: {
+    type: String,
+    enum: ['Official Statement', 'Events', 'Sports', 'Tech'],
+    required: true,
+    default: 'Official Statement'
+  },
     imageUrl: {
       type: String,
       required: false,
@@ -27,5 +28,6 @@ const eventSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 
 module.exports = mongoose.model('Event', eventSchema);
